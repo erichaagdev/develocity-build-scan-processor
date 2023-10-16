@@ -14,4 +14,4 @@ gradleEnterprise {
 
 include(":samples")
 
-rootProject.name = "develocity-build-processor"
+rootProject.name = "develocity-build-scan-processor"
