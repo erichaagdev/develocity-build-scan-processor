@@ -1,4 +1,4 @@
-package dev.erichaag.develocity.cli;
+package dev.erichaag.develocity.api;
 
 import java.io.BufferedReader;
 import java.io.IOException;
