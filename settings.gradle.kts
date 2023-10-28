@@ -12,6 +12,7 @@ gradleEnterprise {
     }
 }
 
+include(":api")
 include(":cli")
 include(":processor")
 

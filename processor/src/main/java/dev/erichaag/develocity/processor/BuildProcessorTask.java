@@ -1,5 +1,6 @@
 package dev.erichaag.develocity.processor;
 
+import dev.erichaag.develocity.api.DevelocityApiClient;
 import dev.erichaag.develocity.model.Build;
 import dev.erichaag.develocity.model.GradleAttributes;
 import dev.erichaag.develocity.model.MavenAttributes;

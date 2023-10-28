@@ -1,4 +1,4 @@
-package dev.erichaag.develocity.processor;
+package dev.erichaag.develocity.api;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;

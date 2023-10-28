@@ -1,6 +1,7 @@
 package dev.erichaag.develocity.processor;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import dev.erichaag.develocity.api.DevelocityApiClient;
 
 import java.net.http.HttpClient;
 
