@@ -1,18 +1,6 @@
 plugins {
-    id("java-library")
+    id("dev.erichaag.java-library")
     id("org.openapi.generator") version "7.0.1"
-}
-
-group = "dev.erichaag.develocity"
-
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
-    }
-}
-
-repositories {
-    mavenCentral()
 }
 
 dependencies {
@@ -25,9 +13,9 @@ openApiGenerate {
     generatorName = "java"
     inputSpec = layout.projectDirectory.file(provider { "gradle-enterprise-2023.3-api.yaml"} ).map { it.asFile.absolutePath }
     outputDir = layout.buildDirectory.dir("generated/openapi").map { it.asFile.absolutePath }
-    modelPackage = "$group.model"
-    apiPackage = "$group.api"
-    invokerPackage = "$group.invoker"
+    modelPackage = "$group.api"
+    apiPackage = "$group.unused.api"
+    invokerPackage = "$group.unused.invoker"
     cleanupOutput = true
     openapiNormalizer = mapOf("REF_AS_PARENT_IN_ALLOF" to "true")
     // see https://github.com/OpenAPITools/openapi-generator/blob/master/docs/generators/java.md for a description of each configuration option
@@ -46,7 +34,7 @@ openApiGenerate {
 val generateApiModels by tasks.registering(Sync::class) {
     from(tasks.openApiGenerate) {
         includeEmptyDirs = false
-        include("src/main/java/dev/erichaag/develocity/model/*")
+        include("src/main/java/dev/erichaag/develocity/api/*")
         eachFile {
             path = path.removePrefix("src/main/java")
         }

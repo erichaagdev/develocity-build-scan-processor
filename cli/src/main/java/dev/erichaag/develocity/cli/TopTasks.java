@@ -1,10 +1,10 @@
 package dev.erichaag.develocity.cli;
 
+import dev.erichaag.develocity.api.Build;
+import dev.erichaag.develocity.api.GradleAttributes;
+import dev.erichaag.develocity.api.MavenAttributes;
 import dev.erichaag.develocity.processor.BuildConsumer;
 import dev.erichaag.develocity.processor.BuildProcessor;
-import dev.erichaag.develocity.model.Build;
-import dev.erichaag.develocity.model.GradleAttributes;
-import dev.erichaag.develocity.model.MavenAttributes;
 
 import java.util.HashMap;
 import java.util.Map;

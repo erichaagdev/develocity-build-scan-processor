@@ -1,9 +1,9 @@
 package dev.erichaag.develocity.processor;
 
+import dev.erichaag.develocity.api.Build;
 import dev.erichaag.develocity.api.DevelocityApiClient;
-import dev.erichaag.develocity.model.Build;
-import dev.erichaag.develocity.model.GradleAttributes;
-import dev.erichaag.develocity.model.MavenAttributes;
+import dev.erichaag.develocity.api.GradleAttributes;
+import dev.erichaag.develocity.api.MavenAttributes;
 
 import java.time.Duration;
 import java.util.Deque;
@@ -45,7 +45,7 @@ final class BuildProcessorTask {
             final var builds = client.getBuilds(query, maxBuildsForQuery, fromBuild);
             builds.forEach(build -> threads.add(ofVirtual().start(() -> processBuild(build))));
             buildsRemaining = builds.size() < maxBuildsForQuery ? 0 : buildsRemaining - maxBuildsForQuery;
-            if (buildsRemaining > 0) fromBuild = builds.get(builds.size() - 1).getId();
+            if (buildsRemaining > 0) fromBuild = builds.getLast().getId();
         }
 
         while (!threads.isEmpty()) {

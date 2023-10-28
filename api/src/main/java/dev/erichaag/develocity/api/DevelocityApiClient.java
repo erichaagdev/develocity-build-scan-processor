@@ -2,9 +2,6 @@ package dev.erichaag.develocity.api;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dev.erichaag.develocity.model.Build;
-import dev.erichaag.develocity.model.GradleAttributes;
-import dev.erichaag.develocity.model.MavenAttributes;
 
 import java.io.IOException;
 import java.net.URI;
