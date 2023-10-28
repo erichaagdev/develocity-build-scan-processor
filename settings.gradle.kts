@@ -12,6 +12,7 @@ gradleEnterprise {
     }
 }
 
-include(":samples")
+include(":cli")
+include(":processor")
 
 rootProject.name = "develocity-build-scan-processor"
