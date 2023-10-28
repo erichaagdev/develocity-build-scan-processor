@@ -1,4 +1,4 @@
-package dev.erichaag.develocity;
+package dev.erichaag.develocity.processor;
 
 import dev.erichaag.develocity.model.Build;
 import dev.erichaag.develocity.model.GradleAttributes;

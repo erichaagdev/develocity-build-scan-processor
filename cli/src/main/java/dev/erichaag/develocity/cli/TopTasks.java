@@ -1,7 +1,7 @@
-package dev.erichaag.sample;
+package dev.erichaag.develocity.cli;
 
-import dev.erichaag.develocity.BuildConsumer;
-import dev.erichaag.develocity.BuildProcessor;
+import dev.erichaag.develocity.processor.BuildConsumer;
+import dev.erichaag.develocity.processor.BuildProcessor;
 import dev.erichaag.develocity.model.Build;
 import dev.erichaag.develocity.model.GradleAttributes;
 import dev.erichaag.develocity.model.MavenAttributes;
@@ -15,7 +15,7 @@ import static java.util.Comparator.comparingInt;
 public class TopTasks {
 
     private static final String serverUrl = "https://ge.solutions-team.gradle.com";
-    private static final String accessKey = System.getenv("DEVELOCITY_API_KEY");
+    private static final String accessKey = new AccessKeyProvider().getAccessKey(serverUrl).orElse(null);
 
     public static void main(String[] args) {
         final var consumer = new TopTasksBuildConsumer();

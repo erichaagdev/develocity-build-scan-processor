@@ -1,4 +1,4 @@
-package dev.erichaag.develocity;
+package dev.erichaag.develocity.processor;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -23,13 +23,13 @@ import static java.util.stream.Collectors.joining;
 public class DevelocityApiClient {
 
     private final URI serverUrl;
-    private final String apiKey;
+    private final String accessKey;
     private final HttpClient httpClient;
     private final ObjectMapper objectMapper;
 
-    public DevelocityApiClient(String serverUrl, String apiKey, HttpClient httpClient, ObjectMapper objectMapper) {
+    public DevelocityApiClient(String serverUrl, String accessKey, HttpClient httpClient, ObjectMapper objectMapper) {
         this.serverUrl = URI.create(serverUrl);
-        this.apiKey = apiKey;
+        this.accessKey = accessKey;
         this.httpClient = httpClient;
         this.objectMapper = objectMapper;
     }
@@ -71,7 +71,9 @@ public class DevelocityApiClient {
     }
 
     private HttpRequest buildRequest(String path, Map<String, String> queryParams) {
-        return HttpRequest.newBuilder().uri(buildRequestUri(path, queryParams)).header("Authorization", "Bearer " + apiKey).build();
+        final var request = HttpRequest.newBuilder().uri(buildRequestUri(path, queryParams));
+        if (accessKey != null) request.header("Authorization", "Bearer " + accessKey);
+        return request.build();
     }
 
     private URI buildRequestUri(String path, Map<String, String> queryParams) {

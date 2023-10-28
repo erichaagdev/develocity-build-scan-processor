@@ -1,4 +1,4 @@
-package dev.erichaag.develocity;
+package dev.erichaag.develocity.processor;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
