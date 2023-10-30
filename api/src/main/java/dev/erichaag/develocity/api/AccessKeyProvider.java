@@ -16,14 +16,13 @@ public class AccessKeyProvider {
 
     private static final String MALFORMED_ENVIRONMENT_VARIABLE_ERROR = "Environment variable " + ACCESS_KEY + " is malformed (expected format: 'server-host=access-key' or 'server-host1=access-key1;server-host2=access-key2')";
 
-    public Optional<String> getAccessKey(String serverUrl) {
+    public Optional<String> getAccessKey(URI serverUrl) {
         try {
             Properties accessKeysByHost = new Properties();
             accessKeysByHost.putAll(loadMavenHomeAccessKeys());
             accessKeysByHost.putAll(loadGradleHomeAccessKeys());
             accessKeysByHost.putAll(loadFromEnvVar());
-
-            return Optional.ofNullable(accessKeysByHost.getProperty(URI.create(serverUrl).getHost()));
+            return Optional.ofNullable(accessKeysByHost.getProperty(serverUrl.getHost()));
         } catch (IOException e) {
             System.out.println("Error while trying to read access keys: " + e.getMessage() + ". Will try fetching build scan data without authentication.");
             return Optional.empty();

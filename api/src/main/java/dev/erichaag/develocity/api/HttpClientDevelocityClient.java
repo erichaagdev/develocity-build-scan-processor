@@ -17,20 +17,21 @@ import static java.net.http.HttpResponse.BodyHandlers.ofByteArray;
 import static java.util.Collections.emptyMap;
 import static java.util.stream.Collectors.joining;
 
-public class DevelocityApiClient {
+public class HttpClientDevelocityClient implements DevelocityClient {
 
     private final URI serverUrl;
     private final String accessKey;
     private final HttpClient httpClient;
     private final ObjectMapper objectMapper;
 
-    public DevelocityApiClient(String serverUrl, String accessKey, HttpClient httpClient, ObjectMapper objectMapper) {
-        this.serverUrl = URI.create(serverUrl);
+    public HttpClientDevelocityClient(URI serverUrl, String accessKey, HttpClient httpClient, ObjectMapper objectMapper) {
+        this.serverUrl = serverUrl;
         this.accessKey = accessKey;
         this.httpClient = httpClient;
         this.objectMapper = objectMapper;
     }
 
+    @Override
     public List<Build> getBuilds(String query, int maxBuilds, String fromBuild) {
         final var queryParams = new HashMap<String, String>();
         queryParams.put("reverse", "true");
@@ -42,14 +43,30 @@ public class DevelocityApiClient {
         });
     }
 
+    @Override
     public GradleAttributes getGradleAttributes(String id) {
         final var response = sendRequest("/api/builds/" + id + "/gradle-attributes");
         return handleResponse(response, new TypeReference<>() {
         });
     }
 
+    @Override
+    public GradleBuildCachePerformance getGradleBuildCachePerformance(String id) {
+        final var response = sendRequest("/api/builds/" + id + "/gradle-build-cache-performance");
+        return handleResponse(response, new TypeReference<>() {
+        });
+    }
+
+    @Override
     public MavenAttributes getMavenAttributes(String id) {
         final var response = sendRequest("/api/builds/" + id + "/maven-attributes");
+        return handleResponse(response, new TypeReference<>() {
+        });
+    }
+
+    @Override
+    public MavenBuildCachePerformance getMavenBuildCachePerformance(String id) {
+        final var response = sendRequest("/api/builds/" + id + "/maven-build-cache-performance");
         return handleResponse(response, new TypeReference<>() {
         });
     }

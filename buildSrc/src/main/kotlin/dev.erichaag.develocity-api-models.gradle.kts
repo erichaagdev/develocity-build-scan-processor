@@ -70,6 +70,10 @@ val generateApiModels by tasks.registering(Sync::class) {
     into(layout.buildDirectory.dir("generated/apiModels"))
 }
 
+val generate by tasks.registering {
+    dependsOn(generateApiModels)
+}
+
 sourceSets {
     main {
         java {

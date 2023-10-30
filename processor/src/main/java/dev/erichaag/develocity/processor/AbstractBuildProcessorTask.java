@@ -1,41 +1,38 @@
 package dev.erichaag.develocity.processor;
 
 import dev.erichaag.develocity.api.Build;
-import dev.erichaag.develocity.api.DevelocityApiClient;
+import dev.erichaag.develocity.api.DevelocityClient;
 import dev.erichaag.develocity.api.GradleAttributes;
+import dev.erichaag.develocity.api.GradleBuildCachePerformance;
 import dev.erichaag.develocity.api.MavenAttributes;
+import dev.erichaag.develocity.api.MavenBuildCachePerformance;
 
 import java.time.Duration;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Supplier;
 
 import static java.lang.Math.min;
 import static java.lang.Thread.ofVirtual;
 
-final class BuildProcessorTask {
+public abstract class AbstractBuildProcessorTask {
 
-    private final DevelocityApiClient client;
+    private final DevelocityClient client;
     private final String query;
-    private final BuildConsumer buildConsumer;
 
     private int buildsRemaining;
     private final Deque<Thread> threads = new LinkedList<>();
     private final Semaphore semaphore = new Semaphore(25);
-    private final Lock lock = new ReentrantLock();
     private String fromBuild = null;
 
     private static final int maxRetries = 3;
     private static final int maxBuildsPerRequest = 1000;
 
-    BuildProcessorTask(DevelocityApiClient client, String query, BuildConsumer buildConsumer, int buildsRemaining) {
+    AbstractBuildProcessorTask(DevelocityClient client, String query, int buildsRemaining) {
         this.client = client;
         this.query = query;
-        this.buildConsumer = buildConsumer;
         this.buildsRemaining = buildsRemaining;
     }
 
@@ -53,22 +50,22 @@ final class BuildProcessorTask {
         }
     }
 
-    private void processBuild(Build build) {
-        if (build.getBuildToolType().equals("gradle")) {
-            final var attributes = withSemaphore(() -> fetchGradleBuild(build.getId()));
-            withLock(() -> buildConsumer.onGradleBuild(build, attributes));
-        } else if (build.getBuildToolType().equals("maven")) {
-            final var attributes = withSemaphore(() -> fetchMavenBuild(build.getId()));
-            withLock(() -> buildConsumer.onMavenBuild(build, attributes));
-        }
+    protected abstract void processBuild(Build build);
+
+    protected GradleAttributes fetchGradleAttributes(String buildId) {
+        return withRetry(() -> withSemaphore(() -> client.getGradleAttributes(buildId)));
     }
 
-    private GradleAttributes fetchGradleBuild(String buildId) {
-        return withRetry(() -> client.getGradleAttributes(buildId));
+    protected GradleBuildCachePerformance fetchGradlePerformance(String buildId) {
+        return withRetry(() -> withSemaphore(() -> client.getGradleBuildCachePerformance(buildId)));
     }
 
-    private MavenAttributes fetchMavenBuild(String buildId) {
-        return withRetry(() -> client.getMavenAttributes(buildId));
+    protected MavenAttributes fetchMavenAttributes(String buildId) {
+        return withRetry(() -> withSemaphore(() -> client.getMavenAttributes(buildId)));
+    }
+
+    protected MavenBuildCachePerformance fetchMavenPerformance(String buildId) {
+        return withRetry(() -> withSemaphore(() -> client.getMavenBuildCachePerformance(buildId)));
     }
 
     private <T> T withSemaphore(Supplier<T> supplier) {
@@ -79,15 +76,6 @@ final class BuildProcessorTask {
             throw new RuntimeException(e);
         } finally {
             semaphore.release();
-        }
-    }
-
-    private void withLock(Runnable task) {
-        lock.lock();
-        try {
-            task.run();
-        } finally {
-            lock.unlock();
         }
     }
 
